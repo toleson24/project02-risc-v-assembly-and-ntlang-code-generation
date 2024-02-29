@@ -1,2 +1,1 @@
-# project02-starter
-Project02 Starter Code
+# project01-starter
