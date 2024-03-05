@@ -1,18 +1,22 @@
-#!/usr/bin/bash
+#!/usr/bin/python3
 
-expr="$1"
-name="$2"
-a0="$3"
-a1="$4"
-a2="$5"
-a3="$6"
-a4="$7"
-a5="$8"
-a6="$9"
-a7="$10"
+import os
+import shutil
+import subprocess
+import sys
 
-./ntlang -e "$expr" -c "$name" > "$name.s"
-gcc -o "$name" "$name.s"
-./"$name" $a0 $a1 $a2 $a3 $a4 $a5 $a6 $a7
-rm "$name"
-rm "$name.s"
+
+expr = sys.argv[1]
+name = sys.argv[2]
+name_s = name + ".s"
+
+cmd = ["./ntlang", "-e", expr, "-c", name]
+p = subprocess.run(cmd, capture_output=True)
+with open(name_s, "w") as f:
+    f.write(p.stdout.decode("utf-8"))
+p = subprocess.run(["gcc", "-o", name, name_s])
+exe = ["./" + name] + sys.argv[3:]
+p = subprocess.run(exe, capture_output=True)
+print(p.stdout.decode("utf-8"), end="")
+os.remove(name)
+os.remove(name_s)
