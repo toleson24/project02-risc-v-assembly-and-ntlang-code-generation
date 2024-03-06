@@ -166,6 +166,11 @@ struct parse_node_st * parse_operand(struct parse_table_st *pt,
 		if (!scan_table_accept(st, TK_RPAREN)) {
 			parse_error("Missing right paren");
 		}
+	} else if (scan_table_accept(st, TK_REG)) {
+		tp = scan_table_get(st, -1);
+		np1 = parse_node_new(pt);
+		np1->type = EX_REG;
+		np1->reg.value = tp->value;  // TODO test
     } else if (scan_table_accept(st, TK_INTLIT)) {
         tp = scan_table_get(st, -1);
         np1 = parse_node_new(pt);
@@ -201,6 +206,9 @@ void parse_tree_print_expr(struct parse_node_st *np, int level) {
 
     if (np->type == EX_INTVAL) {
         printf("INTVAL %d\n", np->intval.value);
+	} else if (np->type == EX_REG) {
+		// TODO test
+		printf("REG %s\n", np->reg.value);
     } else if (np->type == EX_OPER1) {
         printf("OPER1 %s\n", parse_oper_strings[np->oper1.oper]);
         parse_tree_print_expr(np->oper1.operand, level+1);

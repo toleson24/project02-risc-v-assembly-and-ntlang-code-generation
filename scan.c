@@ -202,7 +202,7 @@ char * scan_token(char *p, char *end, struct scan_token_st *tp) {
         p = scan_whitespace(p, end);
         p = scan_token(p, end, tp);
 	} else if (scan_is_register(*p, *(p + 1))) {
-		p = scan_token_helper(tp, p, 2, TK_REGISTER);
+		p = scan_token_helper(tp, p, 2, TK_REG);
     } else if (scan_is_binary_prefix(*p, *(p + 1))) {
         p = scan_binlit(p, end, tp);
     } else if (scan_is_hex_prefix(*p, *(p + 1))) {
