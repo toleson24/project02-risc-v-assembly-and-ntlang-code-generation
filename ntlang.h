@@ -16,9 +16,11 @@
 # Scanner EBNF (microsyntax)
 
 tokens ::= (token)*
-token  ::= intlit | symbol
-symbol ::= '+'
-integer ::= digit (digit)*
+token  ::= intlit | binlit | hexlit | symbol
+symbol ::= '+' | '-' | '*' | '/' | '>>' | '>-' | '<<' | '~' | '&' | '|' | '^'
+intlit ::= digit (digit)*
+binlit ::= '0' | '1' ('0' | '1')*
+hexlit ::= 'a' - 'f' | digit ('a' - 'f' | digit)* 
 digit  ::= '0' | '1' | ... | '9'
 
 # Ignore
@@ -32,19 +34,47 @@ whitespace ::= (' ' | '\t') (' ' | '\t')*
 #define SCAN_INPUT_LEN 4096
 
 enum scan_token_enum {
-    TK_INTLIT, /* 1, 22, 403 */
-    TK_PLUS,   /* + */
-    TK_MINUS,  /* - */
-    TK_EOT,    /* end of text */
-    TK_ANY,    /* A wildcard token used for parsing */
+	TK_INTLIT, /* 1, 22, 403 */
+	TK_BINLIT, /* 0b1010, 0b11110000 */
+	TK_HEXLIT, /* 0x1A5, 0x0000000F*/
+	TK_PLUS,   /* + */
+	TK_MINUS,  /* - */
+	TK_MULT,   /* * */
+	TK_DIV,    /* / */
+	TK_LSR,    /* >> */
+	TK_ASR,    /* >- */
+	TK_LSL,    /* << */
+	TK_NOT,    /* ~ */
+	TK_AND,    /* & */
+	TK_OR,     /* | */
+	TK_XOR,    /* ^ */
+	TK_LPAREN, /* ( */
+	TK_RPAREN, /* ) */
+	TK_EOT,     /* end of text */
+	TK_ANY,    /* A wildcard token used for parsing */
+	TK_NONE,
 };
 
 #define SCAN_TOKEN_STRINGS {\
-    "TK_INTLIT",\
-    "TK_PLUS",\
-    "TK_MINUS",\
-    "TK_EOT",\
-    "TK_ANY"\
+	"TK_INTLIT",\
+	"TK_BINLIT",\
+	"TK_HEXLIT",\
+	"TK_PLUS",\
+	"TK_MINUS",\
+	"TK_MULT",\
+	"TK_DIV",\
+	"TK_LSR",\
+	"TK_ASR",\
+	"TK_LSL",\
+	"TK_NOT",\
+	"TK_AND",\
+	"TK_OR",\
+	"TK_XOR",\
+	"TK_LPAREN",\
+	"TK_RPAREN",\
+	"TK_EOT",\
+	"TK_ANY",\
+	"TK_NONE",\
 };
 
 struct scan_token_st {
@@ -76,14 +106,16 @@ bool scan_table_accept(struct scan_table_st *st, enum scan_token_enum tk_expecte
 
 program    ::= expression EOT
 expression ::= operand (operator operand)*
-operand    ::= intlit
+operand    ::= intlit | binlit | hexlit
+             | '~' operand
              | '-' operand
+             | '(' expression ')'
 
-operator   ::= '+' | '-'
+operator   ::= '+' | '-' | '*' | '/' | '>>' | '>-' | '<<' | '~' | '&' | '|' | '^'
 */
 
 enum parse_expr_enum {EX_INTVAL, EX_OPER1, EX_OPER2};
-enum parse_oper_enum {OP_PLUS, OP_MINUS, OP_MULT, OP_DIV};
+enum parse_oper_enum {OP_PLUS, OP_MINUS, OP_MULT, OP_DIV, OP_LSR, OP_ASR, OP_LSL, OP_NOT, OP_AND, OP_OR, OP_XOR, OP_NONE};
 
 struct parse_node_st {
     enum parse_expr_enum type;
@@ -121,6 +153,9 @@ void parse_tree_print(struct parse_node_st *np);
 
 struct config_st {
     char input[SCAN_INPUT_LEN];
+	int base;
+	int width;
+	bool is_signed;
 };
 
 /*
@@ -129,5 +164,8 @@ struct config_st {
 
 uint32_t eval(struct parse_node_st *pt);
 void eval_print(struct config_st *cp, uint32_t value);
+
+#define WIDTH_DEFAULT 32
+#define EVAL_OUTPUT_LEN 64
 
 
