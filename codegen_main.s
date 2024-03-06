@@ -13,25 +13,11 @@ cogegen_func_s:
 
 
 main:
-	# TODO
 	li t1, 0				# i = 0
 	li t2, 8				# len = 8
-	#li t3, 0				# return value
+	#li t3, 4				# int width = 4
 	
 	la t0, array
-
-
-#init_loop:
-#    bge t0, t1, reset_t1
-#	slli t1, t0, 2
-#    add t1, a, t1
-#    sw zero, 0(t1)
-#	addi t0, t0, 
-#	j init_loop
-	
-       
-#reset_t1:
-#    li t1, 0
 
 
 populate_loop:
