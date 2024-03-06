@@ -2,6 +2,27 @@
 
 #include "ntlang.h"
 
+struct parse_oper_pair_st {
+    enum scan_token_enum tkid;
+    enum parse_oper_enum opid;
+};
+
+struct parse_oper_pair_st parse_oper_map[] = {
+    {TK_PLUS, OP_PLUS},
+    {TK_MINUS, OP_MINUS},
+    {TK_MULT, OP_MULT},
+    {TK_DIV, OP_DIV},
+    {TK_LSR, OP_LSR},
+    {TK_ASR, OP_ASR},
+    {TK_LSL, OP_LSL},
+    {TK_NOT, OP_NOT},
+    {TK_AND, OP_AND},
+    {TK_OR, OP_OR},
+    {TK_XOR, OP_XOR},
+	{TK_NONE, OP_NONE}
+};
+
+
 void parse_table_init(struct parse_table_st *pt) {
     pt->len = 0;
 }
@@ -20,7 +41,7 @@ void parse_error(char *err) {
     exit(-1);
 }
 
-char *parse_oper_strings[] = {"PLUS", "MINUS", "MULT", "DIV"};
+char *parse_oper_strings[] = {"PLUS", "MINUS", "MULT", "DIV", "LSR", "ASR", "LSL", "NOT", "AND", "OR", "XOR", "NONE"};
 
 
 /* We need to provide prototypes for the parsing functions because
@@ -30,8 +51,15 @@ struct parse_node_st * parse_program(struct parse_table_st *pt,
                                         struct scan_table_st *st);
 struct parse_node_st * parse_expression(struct parse_table_st *pt, 
                                         struct scan_table_st *st);
+struct parse_node_st * parse_expression_helper(struct parse_table_st *pt,
+												struct scan_table_st *st,
+												struct parse_node_st *np1,
+												struct parse_node_st *np2,
+												int pee,
+												int poe);
 struct parse_node_st * parse_operand(struct parse_table_st *pt, 
                                         struct scan_table_st *st);
+int parse_oper_lookup(int tkid);
 
 /* We need a parsing function for each rule in the EBNF grammer */
 
@@ -49,55 +77,110 @@ struct parse_node_st * parse_program(struct parse_table_st *pt,
     return np1;
 }
 
-struct parse_node_st * parse_expression(struct parse_table_st *pt, 
-                                        struct scan_table_st *st) {
-    struct scan_token_st *tp;
-    struct parse_node_st *np1, *np2;
+/*
+ * Function written for project01
+ *
+ * // TODO
+*/
+int parse_oper_lookup(int tkid) {
+	int len = *(&parse_oper_map + 1) - parse_oper_map;
+	int op = OP_NONE;	
 
-    /* An expression must start with an operand. */
-    np1 = parse_operand(pt, st);
+	for (int i = 0; i < len; i ++) {
+		if (tkid == parse_oper_map[i].tkid) {
+			op = parse_oper_map[i].opid;
+			break;
+		}
+	}
 
-    while (true) {
-        tp = scan_table_get(st, 0);
-        /* Check for valid operator */
-        if (tp->id == TK_PLUS || tp->id == TK_MINUS) {
-            /* Use TK_ANY as a wildcard */
-            scan_table_accept(st, TK_ANY);
-            np2 = parse_node_new(pt);
-            np2->type = EX_OPER2;
-            if (tp->id == TK_PLUS) {
-                np2->oper2.oper = OP_PLUS;
-            } else if (tp->id == TK_MINUS) {
-                np2->oper2.oper = OP_MINUS;
-            }
-            np2->oper2.left = np1;
-            /* Now parse second operand */
-            np2->oper2.right = parse_operand(pt, st);
-            np1 = np2;
-        } else {
-            break;
-        }
-    }
-
-    return np1;
+	return op;
 }
 
+struct parse_node_st * parse_expression(struct parse_table_st *pt,
+										struct scan_table_st *st) {
+	struct scan_token_st *tp;
+	struct parse_node_st *np1, *np2;
+	int opid;	
+
+	np1 = parse_operand(pt, st);
+
+	while (true) {
+		tp = scan_table_get(st, 0);
+		opid = parse_oper_lookup(tp->id);
+		if (opid == OP_NONE)
+			break;
+		np1 = parse_expression_helper(pt, st, np1, np2, tp->id, opid);
+	}
+
+	return np1;
+}
+
+/*
+ * Function written for lab02
+ * 
+ * // TODO
+*/
+struct parse_node_st * parse_expression_helper(struct parse_table_st *pt, 
+        		                                struct scan_table_st *st,
+                		                        struct parse_node_st *np1,
+                        		                struct parse_node_st *np2,
+                                		        int pee,
+                                        		int poe) { 
+		/* Use TK_ANY as a wildcard */
+        scan_table_accept(st, pee); 
+        np2 = parse_node_new(pt);
+        np2->type = EX_OPER2;
+        np2->oper2.oper = poe;
+        np2->oper2.left = np1;
+        /* Now parse second operand */
+        np2->oper2.right = parse_operand(pt, st);
+        np1 = np2;
+
+        return np1;
+}
+
+/*
+ * Function updated for project01
+ * 
+ * // TODO
+*/
 struct parse_node_st * parse_operand(struct parse_table_st *pt,
                                      struct scan_table_st *st) {
     struct scan_token_st *tp;
     struct parse_node_st *np1;
 
-    if (scan_table_accept(st, TK_INTLIT)) {
+    if (scan_table_accept(st, TK_MINUS)) {
         tp = scan_table_get(st, -1);
-        np1 = parse_node_new(pt);
-        np1->type = EX_INTVAL;
-        /* For Project01 you need to implement your own version of atoi() */
-        np1->intval.value = atoi(tp->value);
-    } else if (scan_table_accept(st, TK_MINUS)) {
         np1 = parse_node_new(pt);
         np1->type = EX_OPER1;
         np1->oper1.oper = OP_MINUS;
         np1->oper1.operand = parse_operand(pt, st);
+    } else if (scan_table_accept(st, TK_NOT)) {
+        tp = scan_table_get(st, -1);
+        np1 = parse_node_new(pt);
+        np1->type = EX_OPER1;
+        np1->oper1.oper = OP_NOT;
+        np1->oper1.operand = parse_operand(pt, st);
+    } else if (scan_table_accept(st, TK_LPAREN)) {
+        np1 = parse_expression(pt, st);
+		if (!scan_table_accept(st, TK_RPAREN)) {
+			parse_error("Missing right paren");
+		}
+    } else if (scan_table_accept(st, TK_INTLIT)) {
+        tp = scan_table_get(st, -1);
+        np1 = parse_node_new(pt);
+        np1->type = EX_INTVAL;
+        np1->intval.value = atoi(tp->value);  // convert_from_base(tp->value, 10);
+    } else if (scan_table_accept(st, TK_BINLIT)) {
+        tp = scan_table_get(st, -1);
+        np1 = parse_node_new(pt);
+        np1->type = EX_INTVAL;
+        np1->intval.value = atoi(tp->value);  // convert_from_base(tp->value, 2);
+    } else if (scan_table_accept(st, TK_HEXLIT)) {
+        tp = scan_table_get(st, -1);
+        np1 = parse_node_new(pt);
+        np1->type = EX_INTVAL;
+        np1->intval.value = atoi(tp->value);  // convert_from_base(tp->value, 16);
     } else {
         parse_error("Bad operand");
     }
