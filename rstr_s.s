@@ -14,11 +14,11 @@ swap_s:
  	add t0, a2, a0
 	add t1, a3, a1 
 
-	lb t2, 0(t0)
-	lb t3, 0(t1)
+	lw t2, 0(t0)
+	lw t3, 0(t1)
 	
-	sb t3, 0(t0)
-	sb t2, 0(t1)
+	sw t3, 0(t0)
+	sw t2, 0(t1)
 
 	ret
 
@@ -45,6 +45,10 @@ rstr_s:
 	ld a1, 16(sp)
 	addi sp, sp, 32
 	
+	addi sp, sp, -16
+	sd ra, (sp)
+	sd t0, 8(sp)	
+	
 	addi t0, t0, -1
 	li t1, 0 
 	
@@ -70,5 +74,11 @@ loop:
 	j loop		
 
 done:
+	ld ra, (sp)
+	ld t0, 8(sp)
+	addi sp, sp, 16
+	
+	add t1, a0, t0
+	sd zero, (t1)
 	ret
     
