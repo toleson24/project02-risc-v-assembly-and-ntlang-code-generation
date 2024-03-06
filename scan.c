@@ -61,10 +61,120 @@ char * scan_intlit(char *p, char *end, struct scan_token_st *tp) {
     return p;
 }
 
+/* 
+ * Function written for lab01
+ * 
+ * Checks the start of a token for '0b' as a prefix. 
+ */
+bool scan_is_binary_prefix(char ch1, char ch2) {
+    return (ch1 == '0' && (ch2 == 'b' || ch2 == 'B'));
+}
+
+/* 
+ * Function written for lab01
+ * 
+ * Checks token characters for either a 0 or 1. 
+ */
+bool scan_is_binary(char ch) {
+    return (ch == '0' || ch == '1');
+}
+
+/* 
+ * Function written for lab01
+ * 
+ * Scans the remaining characters creating binlit val.
+ * Error: hexadecimal-like values.
+ */
+char * scan_binlit(char *p, char *end, struct scan_token_st *tp) {
+    int i = 0;
+    p += 2;
+
+    if (!scan_is_binary(*p)) {
+        printf("error: scan_binlit - expecting 0 or 1.\n");
+        exit(-1);
+    }
+
+    while (scan_is_binary(*p) && (p < end)) {
+        tp->value[i] = *p;
+        p += 1;
+        i += 1;
+    }
+    tp->value[i] = '\0';
+    tp->id = TK_BINLIT;
+
+    return p;
+}
+
+/*
+ * Function written for project01
+ *
+ * Checks the start of a token for '0x' as a prefix.
+*/
+bool scan_is_hex_prefix(char ch1, char ch2) {
+    return (ch1 == '0' && (ch2 == 'x' || ch2 == 'X'));
+}
+
+/* 
+ * Function written for project01
+ * 
+ * Checks token characters for range 'a-f', 'A-F', and digits. 
+ */
+bool scan_is_hexadecimal(char ch) {
+    return (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F') || (ch >= '0' && ch <= '9');
+}
+
+/* 
+ * Function written for project01
+ * 
+ * Converts characters in the range 'a-f' into 'A-F'. 
+ */
+char to_upper(char ch) {
+    if (ch >= 'A' && ch <= 'F') {
+        return ch;
+    } else if (ch >= '0' && ch <= '9') {
+        return ch;
+    } else {
+        return (ch - 'a') + 'A';
+    }
+}
+
+/*
+ * Function written for project01
+ * 
+ * Scans the remaining characters creating a hexlit val.
+ * Error: non-hexadecimal values.
+*/
+char * scan_hexlit(char *p, char *end, struct scan_token_st *tp) {
+    int i = 0;
+    p += 2;
+
+    if (!scan_is_hexadecimal(*p)) {
+        printf("error: scan_hexlit - expecting a-f, A-F, or 0-9.");
+        exit(-1);
+    }
+
+    while (scan_is_hexadecimal(*p) && (p < end)) {
+        tp->value[i] = to_upper(*p);
+        p += 1;
+        i += 1;
+    }
+    tp->value[i] = '\0';
+    tp->id = TK_HEXLIT;
+
+    return p;
+}
+
+/**/
+bool scan_is_register(char ch1, char ch2) {
+	return (ch1 == 'a' && (ch2 >= '0' && ch2 <= '9'))
+}
+
+/*
+ * Read a token starting a p for len characters.
+ * Update the given token with the token string and token id.
+*/
 char * scan_token_helper(struct scan_token_st *tp, char *p, int len,
                        enum scan_token_enum id) {
-    /* Read a token starting a p for len characters.
-       Update the given token with the token string and token id. */
     int i;
 
     tp->id = id;
@@ -91,12 +201,40 @@ char * scan_token(char *p, char *end, struct scan_token_st *tp) {
         /* Ingore whitespace. Notice the recursive call. */
         p = scan_whitespace(p, end);
         p = scan_token(p, end, tp);
+	} else if (scan_is_register(*p, *(p + 1))) {
+		p = scan_register(p, end, TK_REG);  // TODO implement scan_register()
+    } else if (scan_is_binary_prefix(*p, *(p + 1))) {
+        p = scan_binlit(p, end, tp);
+    } else if (scan_is_hex_prefix(*p, *(p + 1))) {
+        p = scan_hexlit(p, end, tp);
     } else if (scan_is_digit(*p)) {
         p = scan_intlit(p, end, tp);        
     } else if (*p == '+') {
         p = scan_token_helper(tp, p, 1, TK_PLUS);
     } else if (*p == '-') {
         p = scan_token_helper(tp, p, 1, TK_MINUS);
+    } else if (*p == '*') {
+        p = scan_token_helper(tp, p, 1, TK_MULT);
+    } else if (*p == '/') {
+        p = scan_token_helper(tp, p, 1, TK_DIV);
+    } else if (*p == '>' && *(p + 1) == '>') {
+        p = scan_token_helper(tp, p, 2, TK_LSR);
+    } else if (*p == '>' && *(p + 1) == '-') {
+        p = scan_token_helper(tp, p, 2, TK_ASR);
+    } else if (*p == '<' && *(p + 1) == '<') {
+        p = scan_token_helper(tp, p, 2, TK_LSL);
+    } else if (*p == '~') {
+        p = scan_token_helper(tp, p, 1, TK_NOT);
+    } else if (*p == '&') {
+        p = scan_token_helper(tp, p, 1, TK_AND);
+    } else if (*p == '|') {
+        p = scan_token_helper(tp, p, 1, TK_OR);
+    } else if (*p == '^') {
+        p = scan_token_helper(tp, p, 1, TK_XOR);
+    } else if (*p == '(') {
+        p = scan_token_helper(tp, p, 1, TK_LPAREN);
+    } else if (*p == ')') {
+        p = scan_token_helper(tp, p, 1, TK_RPAREN);
     } else {
         /* Instead of returning an error code, we will usually
            exit on failure. */
@@ -105,6 +243,7 @@ char * scan_token(char *p, char *end, struct scan_token_st *tp) {
     }
     return p;
 }
+
 
 /* Scan valid tokens in the given input string. */
 void scan_table_scan(struct scan_table_st *st, char *input) {
