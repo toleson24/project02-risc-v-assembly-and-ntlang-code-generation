@@ -38,7 +38,18 @@ get_bitseq_signed_s:
 	addi sp, sp, 64
 	
 	sllw t3, t3, t2
-	srlw t0, t3, t2	
+	
+	blt t3, zero, twos_complement
+	j done	
+
+
+twos_complement:
+	#neg t3, t3		# why is this unncessary here? how is the full two's complement process applied?
+	addi t3, t3, 1
+
+
+done:
+	srl t0, t3, t2
 
 	mv a0, t0
 	ret
