@@ -2,7 +2,7 @@
 .global strlen
 .global swap_s
 
-# Swap chars at indices a1 & a2 in array a0
+# Put char at index a3 in a1 (array) in index a2 in a0 (array).
 #
 # a0 - char dst[]
 # a1 - char src[]
@@ -25,14 +25,14 @@ swap_s:
 
 # Reverse a string iteratively
 #
-# a0 - char arr[] (string)
-# a1 - int len
+# a0 - char dst[]
+# a1 - char src[]
 # t0 - int i
 # t1 - int j
 
 rstr_s:
 	addi sp, sp, -32
-	sw ra, (sp)
+	sd ra, (sp)
 	sd a0, 8(sp)	
 	sd a1, 16(sp)
 	
@@ -40,7 +40,7 @@ rstr_s:
 	call strlen
 	mv t0, a0 
 
-	lw ra, (sp)
+	ld ra, (sp)
 	ld a0, 8(sp)
 	ld a1, 16(sp)
 	addi sp, sp, 32
@@ -52,7 +52,7 @@ loop:
 	blt t0, x0, done
 
 	addi sp, sp, -64
-	sw ra, (sp)
+	sd ra, (sp)
 	sd t0, 24(sp)
 	sd t1, 32(sp)
 
@@ -60,7 +60,7 @@ loop:
 	mv a3, t0
 	call swap_s	
 
-	lw ra, (sp)
+	ld ra, (sp)
 	ld t0, 24(sp)
 	ld t1, 32(sp)
 	addi sp, sp, 64
