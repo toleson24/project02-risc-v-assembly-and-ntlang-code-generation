@@ -4,8 +4,8 @@
 
 # Swap chars at indices a1 & a2 in array a0
 #
-# a0 - char arr[]
-# a1 - char arr[]
+# a0 - char dst[]
+# a1 - char src[]
 # a2 - int i
 # a3 - int j
 # t0-t3 - char temp
@@ -45,10 +45,6 @@ rstr_s:
 	ld a1, 16(sp)
 	addi sp, sp, 32
 	
-	addi sp, sp, -16
-	sw ra, (sp)
-	sw t0, 8(sp)	
-
 	addi t0, t0, -1
 	li t1, 0 
 	
@@ -57,8 +53,6 @@ loop:
 
 	addi sp, sp, -64
 	sw ra, (sp)
-	sd a0, 8(sp)
-	sd a1, 16(sp)
 	sd t0, 24(sp)
 	sd t1, 32(sp)
 
@@ -67,8 +61,6 @@ loop:
 	call swap_s	
 
 	lw ra, (sp)
-	ld a0, 8(sp)
-	ld a1, 16(sp)
 	ld t0, 24(sp)
 	ld t1, 32(sp)
 	addi sp, sp, 64
@@ -78,13 +70,5 @@ loop:
 	j loop		
 
 done:
-	lw ra, (sp)
-	lw t0, 8(sp)
-	li t3, 4
-	mul t0, t0, t3
-	add t1, a0, t0
-	sb zero, (t1)
-	addi sp, sp, 16
-
 	ret
     
