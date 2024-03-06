@@ -38,7 +38,7 @@ enum scan_token_enum {
 	TK_INTLIT, /* 1, 22, 403 */
 	TK_BINLIT, /* 0b1010, 0b11110000 */
 	TK_HEXLIT, /* 0x1A5, 0x0000000F */
-	TK_REGISTER,/* a0, a1 */
+	TK_REG,    /* a0, a1 */
 	TK_PLUS,   /* + */
 	TK_MINUS,  /* - */
 	TK_MULT,   /* * */
@@ -61,7 +61,7 @@ enum scan_token_enum {
 	"TK_INTLIT",\
 	"TK_BINLIT",\
 	"TK_HEXLIT",\
-	"TK_REGISTER",\
+	"TK_REG",\
 	"TK_PLUS",\
 	"TK_MINUS",\
 	"TK_MULT",\
@@ -118,14 +118,15 @@ operand    ::= intlit | binlit | hexlit
 operator   ::= '+' | '-' | '*' | '/' | '>>' | '>-' | '<<' | '~' | '&' | '|' | '^'
 */
 
-enum parse_expr_enum {EX_INTVAL, EX_OPER1, EX_OPER2};
+enum parse_expr_enum {EX_INTVAL, EX_REG, EX_OPER1, EX_OPER2};
 enum parse_oper_enum {OP_PLUS, OP_MINUS, OP_MULT, OP_DIV, OP_LSR, OP_ASR, OP_LSL, OP_NOT, OP_AND, OP_OR, OP_XOR, OP_NONE};
 
 struct parse_node_st {
     enum parse_expr_enum type;
     union {
         struct {uint32_t value;} intval;
-        struct {enum parse_oper_enum oper;
+        struct {char *value;} reg;
+		struct {enum parse_oper_enum oper;
                 struct parse_node_st *operand;} oper1;
         struct {enum parse_oper_enum oper;
                 struct parse_node_st *left;
