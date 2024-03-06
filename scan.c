@@ -169,18 +169,6 @@ bool scan_is_register(char ch1, char ch2) {
 	return (ch1 == 'a' && (ch2 >= '0' && ch2 <= '9'));
 }
 
-/**/
-char * scan_register(char *p, char *end, struct scan_token_st *tp) {
-	int i = 0;
-	for (i = 0; i < 2; i++, p++) {
-		tp->value[i] = *p;
-	}	
-	tp->value[i] = '\0';
-	tp->id = TK_REGISTER;
-
-	return p;
-}
-
 /*
  * Read a token starting a p for len characters.
  * Update the given token with the token string and token id.
