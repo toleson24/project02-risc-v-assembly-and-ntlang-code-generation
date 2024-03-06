@@ -26,5 +26,4 @@ for_loop:
 	j for_loop
 
 done:
-	mv a0, a1
 	ret
