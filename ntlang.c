@@ -12,7 +12,7 @@ bool check_flag(char *argv, char ch_expected) {
 }
 
 bool check_register_flag(char *argv, char ch_expected) {
-	return (check_flag(argv, ch_expected) && (argv[2] >= '0' && argv[2] <= '9'));
+	return (check_flag(argv, ch_expected) && (argv[2] >= '0' && argv[2] <= '8'));
 }
 
 /*
@@ -39,13 +39,11 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
         if (check_flag(argv[i], 'e')) {
             strncpy(cp->input, argv[i + 1], SCAN_INPUT_LEN);
 		} else if (check_register_flag(argv[i], 'a')) {
-			int j = 0;
-			while (j < 8) {
-				if (*argv[j] == j) {
-					cp->args[j] = atoi(argv[i + 1]);
-				}
-				j += 1;
-			}
+			char *flag = argv[i];
+			char *ch_reg_num = &flag[2];
+			int reg_num = atoi(ch_reg_num); // atoi(argv[i]);
+			//printf("reg num %d\treg val %d\n", reg_num, atoi(argv[i + 1]));
+			cp->args[reg_num] = atoi(argv[i + 1]);
         } else if (check_flag(argv[i], 'b')) {
             int base = atoi(argv[i + 1]);  // convert_from_base(argv[i + 1], 10);
             if (base == 2 || base == 10 || base == 16) {
