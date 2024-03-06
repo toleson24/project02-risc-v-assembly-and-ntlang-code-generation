@@ -15,17 +15,18 @@
 
 # Scanner EBNF (microsyntax)
 
-tokens ::= (token)*
-token  ::= intlit | binlit | hexlit | symbol
-symbol ::= '+' | '-' | '*' | '/' | '>>' | '>-' | '<<' | '~' | '&' | '|' | '^'
-intlit ::= digit (digit)*
-binlit ::= '0' | '1' ('0' | '1')*
-hexlit ::= 'a' - 'f' | digit ('a' - 'f' | digit)* 
-digit  ::= '0' | '1' | ... | '9'
+tokens		::= (token)*
+token  		::= intlit | binlit | hexlit | symbol
+symbol 		::= '+' | '-' | '*' | '/' | '>>' | '>-' | '<<' | '~' | '&' | '|' | '^'
+regname		::= 'a0' | 'a1' | ... | 'a7'
+intlit		::= digit (digit)*
+binlit		::= '0' | '1' ('0' | '1')*
+hexlit		::= 'a' - 'f' | digit ('a' - 'f' | digit)* 
+digit 		::= '0' | '1' | ... | '9'
 
 # Ignore
 
-whitespace ::= (' ' | '\t') (' ' | '\t')*
+whitespace	::= (' ' | '\t') (' ' | '\t')*
 
 */
 
@@ -107,6 +108,7 @@ bool scan_table_accept(struct scan_table_st *st, enum scan_token_enum tk_expecte
 program    ::= expression EOT
 expression ::= operand (operator operand)*
 operand    ::= intlit | binlit | hexlit
+             | regname
              | '~' operand
              | '-' operand
              | '(' expression ')'
