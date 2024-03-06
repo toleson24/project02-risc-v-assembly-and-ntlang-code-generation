@@ -171,7 +171,7 @@ bool scan_is_register(char ch1, char ch2) {
 
 /**/
 char * scan_register(char *p, char *end, struct scan_token_st *tp) {
-	int i = 0
+	int i = 0;
 	for (i = 0; i < 2; i++, p++) {
 		tp->value[i] = *p;
 	}	
@@ -214,7 +214,7 @@ char * scan_token(char *p, char *end, struct scan_token_st *tp) {
         p = scan_whitespace(p, end);
         p = scan_token(p, end, tp);
 	} else if (scan_is_register(*p, *(p + 1))) {
-		p = scan_register(p, end, TK_REGISTER);
+		p = scan_token_helper(tp, p, 2, TK_REGISTER);
     } else if (scan_is_binary_prefix(*p, *(p + 1))) {
         p = scan_binlit(p, end, tp);
     } else if (scan_is_hex_prefix(*p, *(p + 1))) {
