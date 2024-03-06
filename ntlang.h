@@ -158,6 +158,7 @@ void parse_tree_print(struct parse_node_st *np);
 
 struct config_st {
     char input[SCAN_INPUT_LEN];
+	int args[8];
 	int base;
 	int width;
 	bool is_signed;
@@ -167,7 +168,7 @@ struct config_st {
  * eval.c
  */
 
-uint32_t eval(struct parse_node_st *pt);
+uint32_t eval(struct config_st * cp, struct parse_node_st *pt);
 void eval_print(struct config_st *cp, uint32_t value);
 
 #define WIDTH_DEFAULT 32

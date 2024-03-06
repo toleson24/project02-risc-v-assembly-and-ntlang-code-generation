@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
     //parse_tree_print(parse_tree);
     //printf("\n");
 
-    value = eval(parse_tree);
+    value = eval(&config, parse_tree);
     eval_print(&config, value);
 
     return 0;
