@@ -62,31 +62,32 @@ basecase:
 recstep:
 	sw t3, (t0)
 	
-	addi sp, sp, -80
+	#addi sp, sp, -80
 	# sw ra, (sp)
-	sw a0, 8(sp)
-	sw a1, 16(sp)
-	sw a2, 24(sp)
-	sw a3, 32(sp)
-	sw t0, 40(sp)
-	sw t1, 48(sp)
-	sw t2, 56(sp)
-	sw t3, 64(sp)
+	#sw a0, 8(sp)
+	#sw a1, 16(sp)
+	#sw a2, 24(sp)
+	#sw a3, 32(sp)
+	#sw t0, 40(sp)
+	#sw t1, 48(sp)
+	#sw t2, 56(sp)
+	#sw t3, 64(sp)
 
 	addi a1, a1, 1
 	addi a3, a3, -1	
-	call basecase
+	#call basecase
+	j basecase
 
 	# lw ra, (sp)
-	lw a0, 8(sp)
-	lw a1, 16(sp)
-	lw a2, 24(sp)
-	lw a3, 32(sp)
-	lw t0, 40(sp)
-	lw t1, 48(sp)
-	lw t2, 56(sp)
-	lw t3, 64(sp)
-	addi sp, sp, 80
+	#lw a0, 8(sp)
+	#lw a1, 16(sp)
+	#lw a2, 24(sp)
+	#lw a3, 32(sp)
+	#lw t0, 40(sp)
+	#lw t1, 48(sp)
+	#lw t2, 56(sp)
+	#lw t3, 64(sp)
+	#addi sp, sp, 80
 
 
 done:
