@@ -37,7 +37,8 @@ whitespace	::= (' ' | '\t') (' ' | '\t')*
 enum scan_token_enum {
 	TK_INTLIT, /* 1, 22, 403 */
 	TK_BINLIT, /* 0b1010, 0b11110000 */
-	TK_HEXLIT, /* 0x1A5, 0x0000000F*/
+	TK_HEXLIT, /* 0x1A5, 0x0000000F */
+	TK_REGISTER,/* a0, a1 */
 	TK_PLUS,   /* + */
 	TK_MINUS,  /* - */
 	TK_MULT,   /* * */
@@ -60,6 +61,7 @@ enum scan_token_enum {
 	"TK_INTLIT",\
 	"TK_BINLIT",\
 	"TK_HEXLIT",\
+	"TK_REGISTER",\
 	"TK_PLUS",\
 	"TK_MINUS",\
 	"TK_MULT",\
