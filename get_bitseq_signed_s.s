@@ -17,24 +17,24 @@ get_bitseq_signed_s:
 	sub t2, t3, t1	
 
 	addi sp, sp, -64
-	sw ra, (sp)
-	sw a0, 8(sp)
-	sw a1, 16(sp)
-	sw a2, 24(sp)
-	sw t0, 32(sp)
-	sw t1, 40(sp)
-	sw t2, 48(sp)
+	sd ra, (sp)
+	sd a0, 8(sp)
+	sd a1, 16(sp)
+	sd a2, 24(sp)
+	sd t0, 32(sp)
+	sd t1, 40(sp)
+	sd t2, 48(sp)
 
 	call get_bitseq_s
 	mv t3, a0	
 	
-	lw ra, (sp)
-	lw a0, 8(sp)
-	lw a1, 16(sp)
-	lw a2, 24(sp)
-	lw t0, 32(sp)
-	lw t1, 40(sp)
-	lw t2, 48(sp)
+	ld ra, (sp)
+	ld a0, 8(sp)
+	ld a1, 16(sp)
+	ld a2, 24(sp)
+	ld t0, 32(sp)
+	ld t1, 40(sp)
+	ld t2, 48(sp)
 	addi sp, sp, 64
 	
 	sllw t3, t3, t2
