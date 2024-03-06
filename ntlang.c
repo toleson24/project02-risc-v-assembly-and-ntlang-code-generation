@@ -11,6 +11,10 @@ bool check_flag(char *argv, char ch_expected) {
     return (argv[0] == '-' && argv[1] == ch_expected);
 }
 
+bool check_register_flag(char *argv, char ch_expected) {
+	return (check_flag(argv, ch_expected) && (argv[2] >= '0' && argv[2] <= '9'));
+}
+
 /*
  A simple command line argument parser
 
@@ -20,28 +24,37 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
     int i = 1;
 
     if (argc <= 2) {
-        printf("Usage: project01 -e <expression>\n");
-        printf("  Example: project01 -e \"1 + 2\"\n");
+        printf("Usage: project02 -e <expression>\n");
+        printf("  Example: project02 -e \"1 + 2\"\n");
         exit(-1);
     }
 
     // defaults: width 32, base 10, & signed
     cp->width = WIDTH_DEFAULT;
-    cp->base = BASE_DECIMAL;
+    cp->base = 10;
     cp->is_signed = true;
+	// TODO zero out cp->args ?	
 
     while (i < argc && i + 1 < argc) {
         if (check_flag(argv[i], 'e')) {
             strncpy(cp->input, argv[i + 1], SCAN_INPUT_LEN);
+		} else if (check_register_flag(argv[i], 'a')) {
+			int j = 0;
+			while (j < 8) {
+				if (*argv[j] == j) {
+					cp->args[j] = atoi(argv[i + 1]);
+				}
+				j += 1;
+			}
         } else if (check_flag(argv[i], 'b')) {
-            int base = convert_from_base(argv[i + 1], 10);
+            int base = atoi(argv[i + 1]);  // convert_from_base(argv[i + 1], 10);
             if (base == 2 || base == 10 || base == 16) {
-                cp->base = convert_from_base(argv[i + 1], 10);
+                cp->base = atoi(argv[i + 1]);  // convert_from_base(argv[i + 1], 10);
             }
         } else if (check_flag(argv[i], 'w')) {
-            int width = convert_from_base(argv[i + 1], 10);
+            int width = atoi(argv[i + 1]);  // convert_from_base(argv[i + 1], 10);
             if (width == 4 || width == 8 || width == 16 || width == 32) {
-                cp->width = convert_from_base(argv[i + 1], 10);
+                cp->width = atoi(argv[i + 1]);  // convert_from_base(argv[i + 1], 10);
             }
         } else if (check_flag(argv[i], 'u')) {
             cp->is_signed = false;
@@ -50,7 +63,8 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
     }
 
     if (strnlen(cp->input, SCAN_INPUT_LEN) == 0) {
-        printf("No expression given to evaluate");
+        printf("No expression given to evaluate\n");
+		exit(-1);
     }
 }
 
@@ -61,23 +75,17 @@ int main(int argc, char **argv) {
     struct parse_node_st *parse_tree;
     uint32_t value;
     
-    if (argc != 2) {
-        printf("Usage: project01 <expression>\n");
-        printf("  Example: project01 \"1 + 2\"\n");
-        exit(-1);
-    }
-
-    strncpy(config.input, argv[1], SCAN_INPUT_LEN);
+	parse_args(&config, argc, argv);
 
     scan_table_init(&scan_table);
     scan_table_scan(&scan_table, config.input);
-    scan_table_print(&scan_table);
-    printf("\n");
+    //scan_table_print(&scan_table);
+    //printf("\n");
     
     parse_table_init(&parse_table);
     parse_tree = parse_program(&parse_table, &scan_table);
-    parse_tree_print(parse_tree);
-    printf("\n");
+    //parse_tree_print(parse_tree);
+    //printf("\n");
 
     value = eval(parse_tree);
     eval_print(&config, value);
