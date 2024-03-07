@@ -12,9 +12,9 @@ struct compile_oper_pair_st compile_oper_map[] = {
 	{OP_MINUS, "sub t0, t0, t1\n"},
 	{OP_MULT, "mul t0, t0, t1\n"},
 	{OP_DIV, "div t0, t0, t1\n"},
-	{OP_LSR, "srlw t0, t0, t1\n"},
-	{OP_ASR, "sraw t0, t0, t1\n"},
-	{OP_LSL, "sllw t0, t0, t1\n"},
+	{OP_LSR, "srl t0, t0, t1\n"},
+	{OP_ASR, "sra t0, t0, t1\n"},
+	{OP_LSL, "sll t0, t0, t1\n"},
 	{OP_NOT, "li t1, -1\nxor t0, t0, t1\n"},	// TODO remove ?
 	{OP_AND, "and t0, t0, t1\n"},
 	{OP_OR, "or t0, t0, t1\n"},

@@ -63,10 +63,10 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
         i += 1;
     }
 
-    if (strnlen(cp->input, SCAN_INPUT_LEN) == 0) {
+    /*if (strnlen(cp->input, SCAN_INPUT_LEN) == 0) {
         printf("No expression given to evaluate\n");
 		exit(-1);
-    }
+    }*/
 }
 
 int main(int argc, char **argv) {

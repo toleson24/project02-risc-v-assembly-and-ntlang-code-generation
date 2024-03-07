@@ -13,17 +13,18 @@ unpack_bytes_s:
     li t0, 0
 	li t1, 4
 	mv t2, a0
-	li t3, 255
+	#li t3, 255
 	
-for_loop:
+loop:
 	bge t0, t1, done
-	and t2, t2, t3
+	andi t2, t2, 0xFF
  	mul t4, t0, t1
 	add t4, a1, t4
-	sw t2, (t4)		# (a1)
-	srlw t2, t2, 8
+	sb t2, (t4)		# (a1)
+	srai t2, t2, 8
 	addi t0, t0, 1
-	j for_loop
+	j loop
 
 done:
+	mv a0, a1
 	ret
