@@ -177,4 +177,10 @@ void eval_print(struct config_st *cp, uint32_t value);
 #define WIDTH_DEFAULT 32
 #define EVAL_OUTPUT_LEN 64
 
+/*
+ * compile.c
+ */
+
+void generate_code(struct parse_node_st *pt);
+
 
