@@ -1,10 +1,14 @@
 #! risc-v
 
 .data
-	array:  .word 0, 0, 0, 0, 0, 0, 0, 0
-	format_string:	.asciiz "%d (0x%X)\n"
+	array:  
+		.word 0, 0, 0, 0, 0, 0, 0, 0
+	format_string:	
+		.string "%d (0x%X)\n"   # Example format string
+    	.byte 0
 
 .text
+.global main
 .global codegen_func_s
 .global atoi
 .global printf
@@ -56,6 +60,7 @@ populate_loop:
 	add t4, t0, t4
 	sd t3, (t4)				# a[i - 1] = t3
 	
+	addi t1, t1, 1	
 	addi t1, t1, 1
 	j populate_loop
 
@@ -79,6 +84,7 @@ func_call:
 	ld a6, 24(t0)
 	ld a7, 28(t0)
 	call codegen_func_s
+	# call test_function_1
 	mv t4, a0	
 
 	ld ra, (sp)
@@ -118,5 +124,16 @@ done:
     ret
 
 
-cogegen_func_s:
+# Dummy test function that returns a predetermined value
+test_function_1:
+    # Set the return value (e.g., 42)
+    #li a0, 42
+	add a0, a0, a1
+	mul a0, a0, a2    
+
+    # Return to the caller
+    ret
+
+
+codegen_func_s:
 
