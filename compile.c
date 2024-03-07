@@ -22,10 +22,26 @@ struct compile_oper_pair_st compile_oper_map[] = {
 	{OP_NONE, ""},								// TODO remove ?
 };
 
+void compile_output_main(char *name);
 void generate_code(struct parse_node_st *pt);
 void generate_unary_oper_code(int oper);
 void generate_binary_oper_code(int oper);
 char * compile_oper_lookup(int opid);
+
+void compile_output_main(char *name) {
+    int fd;
+    char c;
+    int rv;
+
+    fd = open(name, O_RDONLY);
+    while (true) {
+        rv = read(fd, &c, 1);
+        if (rv <= 0) {
+            break;
+        }
+        printf("%c", c);
+    }
+}
 
 void generate_code(struct parse_node_st *pt) {
 	int sp_space = 4;
