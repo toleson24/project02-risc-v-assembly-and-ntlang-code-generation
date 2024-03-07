@@ -7,34 +7,19 @@ struct compile_oper_pair_st {
 	char *as_code;
 };
 
-char *as_oper_strings[] = COMPILE_OPER_STRINGS;
-/*	"addi t0, t0, t1\n",
-	"sub t0, t0, t1\n",
-	"mul t0, t0, t1\n",
-	"div t0, t0, t1\n",
-	"srlw t0, t0, t1\n",
-	"sraw t0, t0, t1\n",
-	"sllw t0, t0, t1\n",
-	"li t1, -1\nxor t0, t0, t1\n",	// TODO remove ?
-	"and t0, t0, t1\n",
-	"or t0, t0, t1\n",
-	"xor t0, t0, t1\n",
-	"",								// TODO remove ?
-};*/
-
 struct compile_oper_pair_st compile_oper_map[] = {
 	{OP_PLUS, "addi t0, t0, t1\n"},
-	{OP_MINUS, "sub t0, t0, t1\n"},/*
-	{OP_MULT, as_oper_strings[2]},
-	{OP_DIV, as_oper_strings[3]},
-	{OP_LSR, as_oper_strings[4]},
-	{OP_ASR, as_oper_strings[5]},
-	{OP_LSL, as_oper_strings[6]},
-	{OP_NOT, as_oper_strings[7]},	// TODO remove ?
-	{OP_AND, as_oper_strings[8]},
-	{OP_OR, as_oper_strings[9]},
-	{OP_XOR, as_oper_strings[10]},
-	{OP_NONE, as_oper_strings[11]},*/	// TODO remove ?
+	{OP_MINUS, "sub t0, t0, t1\n"},
+	{OP_MULT, "mul t0, t0, t1\n"},
+	{OP_DIV, "div t0, t0, t1\n"},
+	{OP_LSR, "srlw t0, t0, t1\n"},
+	{OP_ASR, "sraw t0, t0, t1\n"},
+	{OP_LSL, "sllw t0, t0, t1\n"},
+	{OP_NOT, "li t1, -1\nxor t0, t0, t1\n"},	// TODO remove ?
+	{OP_AND, "and t0, t0, t1\n"},
+	{OP_OR, "or t0, t0, t1\n"},
+	{OP_XOR, "xor t0, t0, t1\n"},
+	{OP_NONE, ""},								// TODO remove ?
 };
 
 void generate_code(struct parse_node_st *pt);
