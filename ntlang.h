@@ -181,6 +181,7 @@ void eval_print(struct config_st *cp, uint32_t value);
  * compile.c
  */
 
+void compile_output_main(char *name);
 void generate_code(struct parse_node_st *pt);
 
 
