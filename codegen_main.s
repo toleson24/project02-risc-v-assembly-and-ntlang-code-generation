@@ -2,14 +2,14 @@
 
 .data
 	array:  .word 0, 0, 0, 0, 0, 0, 0, 0
+	format_string:	.asciiz "%d (0x%X)\n"
 
 .text
 .global codegen_func_s
 .global atoi
+.global printf
 
 # Parameters
-cogegen_func_s:
-    # TODO
 
 
 main:
@@ -69,8 +69,17 @@ func_call:
 	sd t1, 32(sp)
 	sd t2, 40(sp)
 	sd t3, 48(sp)
-
+	
+	ld a0, (t0)
+	ld a1, 4(t0)
+	ld a2, 8(t0)
+	ld a3, 12(t0)
+	ld a4, 16(t0)
+	ld a5, 20(t0)
+	ld a6, 24(t0)
+	ld a7, 28(t0)
 	call codegen_func_s
+	mv t4, a0	
 
 	ld ra, (sp)
 	ld a0, 8(sp)
@@ -81,8 +90,33 @@ func_call:
 	ld t3, 48(sp)
 	addi sp, sp, 64
 
-	# TODO print
+	addi sp, sp, -64
+	sd ra, (sp)
+	sd a0, 8(sp)
+	sd a1, 16(sp)
+	sd t0, 24(sp)
+	sd t1, 32(sp)
+	sd t2, 40(sp)
+	sd t3, 48(sp)
+	
+	la a0, format_string
+	mv a1, t4
+	mv a2, t4
+	call printf
 
+	ld ra, (sp)
+	ld a0, 8(sp)
+	ld a1, 16(sp)
+	ld t0, 24(sp)
+	ld t1, 32(sp)
+	ld t2, 40(sp)
+	ld t3, 48(sp)
+	addi sp, sp, 64
+	
 
 done:
     ret
+
+
+cogegen_func_s:
+
