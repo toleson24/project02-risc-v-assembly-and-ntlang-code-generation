@@ -41,8 +41,7 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
 		} else if (check_register_flag(argv[i], 'a')) {
 			char *flag = argv[i];
 			char *ch_reg_num = &flag[2];
-			int reg_num = atoi(ch_reg_num); // atoi(argv[i]);
-			//printf("reg num %d\treg val %d\n", reg_num, atoi(argv[i + 1]));
+			int reg_num = atoi(ch_reg_num);
 			cp->args[reg_num] = atoi(argv[i + 1]);
         } else if (check_flag(argv[i], 'b')) {
             int base = atoi(argv[i + 1]);  // convert_from_base(argv[i + 1], 10);
@@ -56,7 +55,9 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
             }
         } else if (check_flag(argv[i], 'u')) {
             cp->is_signed = false;
-        }
+        } else if (check_flag(argv[i], 'c')) {
+			cp->compile = true;
+		}
         i += 1;
     }
 

@@ -162,6 +162,7 @@ struct config_st {
 	int base;
 	int width;
 	bool is_signed;
+	bool compile;
 };
 
 /*
@@ -170,6 +171,8 @@ struct config_st {
 
 uint32_t eval(struct config_st * cp, struct parse_node_st *pt);
 void eval_print(struct config_st *cp, uint32_t value);
+
+//int itoa(uint32_t num, char *str, int base);
 
 #define WIDTH_DEFAULT 32
 #define EVAL_OUTPUT_LEN 64
