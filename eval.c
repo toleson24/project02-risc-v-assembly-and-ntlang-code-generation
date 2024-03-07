@@ -57,11 +57,6 @@ void eval_ex_oper2(uint32_t *v1, uint32_t v2, int oper) {
     }
 }
 
-int get_register_values() {
-	
-	return 0;
-}
-
 uint32_t eval(struct config_st *cp, struct parse_node_st *pt) {
     uint32_t v1, v2;
 
@@ -69,15 +64,9 @@ uint32_t eval(struct config_st *cp, struct parse_node_st *pt) {
         v1 = pt->intval.value;
 	} else if (pt->type == EX_REG) {
 		char *reg = pt->reg.value;
-		//printf("eval reg: %s\n", reg);
 		char *ch_reg_num = &reg[1];
-		//printf("eval ch_reg_num: %s\n", ch_reg_num);
 		int reg_num = atoi(ch_reg_num);
-		//printf("eval reg_num: %d\n", reg_num);
-		uint32_t reg_value = cp->args[reg_num];
-		//printf("eval reg_val: %d\n", reg_value);
 		v1 = cp->args[reg_num];
-		//printf("eval v1: %d\n", v1);
     } else if (pt->type == EX_OPER1) {
         v1 = eval(cp, pt->oper1.operand);
         int oper = pt->oper1.oper;
