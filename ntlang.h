@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 /*
@@ -162,7 +164,8 @@ struct config_st {
 	int base;
 	int width;
 	bool is_signed;
-	bool compile;
+	bool compile_flag;
+	char *fname;
 };
 
 /*
