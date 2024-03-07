@@ -57,18 +57,34 @@ void eval_ex_oper2(uint32_t *v1, uint32_t v2, int oper) {
     }
 }
 
-uint32_t eval(struct parse_node_st *pt) {
+int get_register_values() {
+	
+	return 0;
+}
+
+uint32_t eval(struct config_st *cp, struct parse_node_st *pt) {
     uint32_t v1, v2;
 
     if (pt->type == EX_INTVAL) {
         v1 = pt->intval.value;
+	} else if (pt->type == EX_REG) {
+		char *reg = pt->reg.value;
+		//printf("eval reg: %s\n", reg);
+		char *ch_reg_num = &reg[1];
+		//printf("eval ch_reg_num: %s\n", ch_reg_num);
+		int reg_num = atoi(ch_reg_num);
+		//printf("eval reg_num: %d\n", reg_num);
+		uint32_t reg_value = cp->args[reg_num];
+		//printf("eval reg_val: %d\n", reg_value);
+		v1 = cp->args[reg_num];
+		//printf("eval v1: %d\n", v1);
     } else if (pt->type == EX_OPER1) {
-        v1 = eval(pt->oper1.operand);
+        v1 = eval(cp, pt->oper1.operand);
         int oper = pt->oper1.oper;
         eval_ex_oper1(&v1, oper);
     } else if (pt->type == EX_OPER2) {
-        v1 = eval(pt->oper2.left);
-        v2 = eval(pt->oper2.right);
+        v1 = eval(cp, pt->oper2.left);
+        v2 = eval(cp, pt->oper2.right);
         int oper = pt->oper2.oper;
         eval_ex_oper2(&v1, v2, oper);
     } 
@@ -136,7 +152,6 @@ char * to_base_string(uint32_t value, int width, int base, bool is_signed) {
 
 }
 
-
 /**/
 void eval_print(struct config_st *cp, uint32_t value) {
     int base = cp->base;
@@ -150,16 +165,26 @@ void eval_print(struct config_st *cp, uint32_t value) {
             value = (~value) + 1;
         }
     }
-    
+	
+	char output[SCAN_INPUT_LEN];    
     switch(base) {
         case 2:  // BASE_BINARY:
-            printf("%s\n", to_base_string(value, width, base, is_signed));
+			//itoa(value, output, 2);
+			sprintf(output,"%d", value);
+			printf("%s\n", output);
+			//printf("%s\n", to_base_string(value, width, base, is_signed));
             break;
         case 10:  // BASE_DECIMAL:
-            printf("%s\n", to_base_string(value, width, base, is_signed));
+			//itoa(value, output, 10);
+			sprintf(output,"%d", value);
+			printf("%s\n", output);
+            //printf("%s\n", to_base_string(value, width, base, is_signed));
             break;
         case 16:  // BASE_HEXADECIMAL:
-            printf("%s\n", to_base_string(value, width, base, is_signed));
+			//itoa(value, output, 16);
+			sprintf(output,"%d", value);
+			printf("%s\n", output);
+            //printf("%s\n", to_base_string(value, width, base, is_signed));
             break;
     }
 }
