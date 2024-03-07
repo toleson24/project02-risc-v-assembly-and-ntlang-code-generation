@@ -33,7 +33,7 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
     cp->width = WIDTH_DEFAULT;
     cp->base = 10;
     cp->is_signed = true;
-	// TODO zero out cp->args ?	
+	cp->compile_flag = false;
 
     while (i < argc && i + 1 < argc) {
         if (check_flag(argv[i], 'e')) {
@@ -56,7 +56,9 @@ void parse_args(struct config_st *cp, int argc, char **argv) {
         } else if (check_flag(argv[i], 'u')) {
             cp->is_signed = false;
         } else if (check_flag(argv[i], 'c')) {
-			cp->compile = true;
+			cp->compile_flag = true;
+			cp->fname = argv[i + 1];
+			//strncpy(cp->fname, argv[i + 1], SCAN_INPUT_LEN);
 		}
         i += 1;
     }
@@ -86,8 +88,15 @@ int main(int argc, char **argv) {
     //parse_tree_print(parse_tree);
     //printf("\n");
 
-    value = eval(&config, parse_tree);
-    eval_print(&config, value);
+	if (config.compile_flag) {
+		compile_output_main("codegen_main.s");
+		printf("%s:\n", config.fname);	
+		generate_code(parse_tree);
+		printf("lw a0, (sp)\naddi sp, sp, 4\nret\n");
+	} else {
+		value = eval(&config, parse_tree);
+		eval_print(&config, value);
+	}
 
     return 0;
 }
