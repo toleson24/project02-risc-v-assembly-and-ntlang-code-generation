@@ -8,7 +8,7 @@ struct compile_oper_pair_st {
 };
 
 struct compile_oper_pair_st compile_oper_map[] = {
-	{OP_PLUS, "addi t0, t0, t1\n"},
+	{OP_PLUS, "add t0, t0, t1\n"},
 	{OP_MINUS, "sub t0, t0, t1\n"},
 	{OP_MULT, "mul t0, t0, t1\n"},
 	{OP_DIV, "div t0, t0, t1\n"},
@@ -45,6 +45,8 @@ void compile_output_main(char *name) {
 
 void generate_code(struct parse_node_st *pt) {
 	int sp_space = 4;
+	//printf("foo:");
+	
 	switch(pt->type) {
 		case EX_INTVAL:
 			printf("addi sp, sp, %d\n", -sp_space);
@@ -65,12 +67,14 @@ void generate_code(struct parse_node_st *pt) {
 			generate_code(pt->oper2.left);
 			generate_code(pt->oper2.right);
 			printf("lw t1, (sp)\n");
-			printf("addi, sp, sp, %d\n", sp_space);
+			printf("addi sp, sp, %d\n", sp_space);
 			printf("lw t0, (sp)\n");
 			generate_binary_oper_code(pt->oper2.oper);
 			printf("sw t0, (sp)\n");
 			break;
 	}
+	
+	
 }
 
 void generate_unary_oper_code(int oper) {
