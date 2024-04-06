@@ -37,13 +37,7 @@ void eval_ex_oper2(uint32_t *v1, uint32_t v2, int oper) {
     } else if (oper == OP_LSR) {
         *v1 = *v1 >> v2;
     } else if (oper == OP_ASR) {
-		// TODO simplify
-		if (*v1 & 0x80000000) {
-		    *v1 = *v1 >> v2;
-            *v1 = *v1 | (~((~0u) >> 2));
-		} else {
-			*v1 = *v1 >> v2;
-		}
+	    *v1 = (int32_t) (*v1 >> v2);
     } else if (oper == OP_LSL) {
         *v1 = *v1 << v2;
     } else if (oper == OP_AND) {
