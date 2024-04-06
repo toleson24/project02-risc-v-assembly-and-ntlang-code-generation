@@ -15,7 +15,7 @@ struct compile_oper_pair_st compile_oper_map[] = {
 	{OP_LSR, "srl t0, t0, t1\n"},
 	{OP_ASR, "sra t0, t0, t1\n"},
 	{OP_LSL, "sll t0, t0, t1\n"},
-	{OP_NOT, "li t1, -1\nxor t0, t0, t1\n"},	// TODO remove ?
+//	{OP_NOT, "li t1, -1\nxor t0, t0, t1\n"},	// TODO remove ?
 	{OP_AND, "and t0, t0, t1\n"},
 	{OP_OR, "or t0, t0, t1\n"},
 	{OP_XOR, "xor t0, t0, t1\n"},
@@ -73,8 +73,6 @@ void generate_code(struct parse_node_st *pt) {
 			printf("sw t0, (sp)\n");
 			break;
 	}
-	
-	
 }
 
 void generate_unary_oper_code(int oper) {
