@@ -17,7 +17,6 @@ main:
 	sd a1, 16(sp)
 	
 	addi sp, sp, -64
-#	la t0, 24(sp)					# a[8]
 	mv t0, sp
 	li t1, 0					# i = 0
 	li t2, 8					# len = 8
@@ -28,32 +27,33 @@ initialize_loop:
 	bge t1, a0, pre_populate	# if i >= 8, branch
 	mul t4, t2, t1
 	add t4, t0, t4
-	sd t3, 0(t4)	# t4			# a[i] = 0
+	sd t3, 0(t4)				# a[i] = 0
 	addi t1, t1, 1				# i++
 	j initialize_loop
 
 
 pre_populate:
 	li t1, 1					# i = 1, argv[0] = program
-
+	
 
 populate_loop:
     bge t1, a0, func_call
-	bge t1, t2, func_call
+	bgt t1, t2, func_call
 	
 	addi sp, sp, -104
 	sd ra, (sp)
 	sd a0, 8(sp)
 	sd a1, 16(sp)
 	sd t0, 24(sp)
-	sd t1, 88(sp)
-	sd t2, 96(sp)
+	sd t1, 88(sp) # 88
+	sd t2, 96(sp) # 96
 
 	li t2, 8					# 8-bit ptr
 	mul t2, t2, t1
 	add t1, a1, t2
-	mv a0, t1
-	
+	ld a0, (t1)
+#	mv a0, t1
+
 	call atoi
 	mv t3, a0					# t3 = atoi(argv[i])
 
@@ -61,8 +61,8 @@ populate_loop:
 	ld a0, 8(sp)
 	ld a1, 16(sp)
 	ld t0, 24(sp)
-	ld t1, 88(sp)
-	ld t2, 96(sp)
+	ld t1, 88(sp) # 88
+	ld t2, 96(sp) # 96
 	addi sp, sp, 104
 
 	addi t1, t1, -1				# i = i - 1
