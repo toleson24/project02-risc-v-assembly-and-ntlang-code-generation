@@ -10,23 +10,25 @@
     	.byte 0
 
 .text
-# Parameters
-# TODO
-
 main:
-	ld t0, 24(sp)					# a[8]
-	# sub sp, sp, t0
-	# sd, t0, (sp)
+	addi sp, sp, -24
+	sd ra, (sp)
+	sd a0, 8(sp)
+	sd a1, 16(sp)
+	
+	addi sp, sp, -64
+#	la t0, 24(sp)					# a[8]
+	mv t0, sp
 	li t1, 0					# i = 0
 	li t2, 8					# len = 8
-	li t3, 0
-
+	li t3, 0					# val = 0, TODO use the zero register
+	li t4, 0					# offset = 0
 
 initialize_loop:
 	bge t1, a0, pre_populate	# if i >= 8, branch
 	mul t4, t2, t1
-	add t4, t0, t4				
-	sd t3, 0(t4)				# a[i] = 0
+	add t4, t0, t4
+	sd t3, 0(t4)	# t4			# a[i] = 0
 	addi t1, t1, 1				# i++
 	j initialize_loop
 
@@ -101,16 +103,12 @@ func_call:
 	call printf
 
 	ld ra, (sp)
-	# ld a0, 8(sp)
-	# ld a1, 16(sp)
-	# ld t0, 24(sp)
-	# ld t1, 88(sp)
-	# ld t2, 88(sp)
-	#ld t3, 104(sp)
 	addi sp, sp, 120
 	
 
 done:
+	addi sp, sp, 24
+	addi sp, sp, 64
     ret
 
 
