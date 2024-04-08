@@ -52,7 +52,6 @@ populate_loop:
 	mul t2, t2, t1
 	add t1, a1, t2
 	ld a0, (t1)
-#	mv a0, t1
 
 	call atoi
 	mv t3, a0					# t3 = atoi(argv[i])
