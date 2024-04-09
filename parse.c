@@ -60,6 +60,7 @@ struct parse_node_st * parse_expression_helper(struct parse_table_st *pt,
 struct parse_node_st * parse_operand(struct parse_table_st *pt, 
                                         struct scan_table_st *st);
 int parse_oper_lookup(int tkid);
+uint32_t convert_from_base(char *str, int base);
 
 /* We need a parsing function for each rule in the EBNF grammer */
 
@@ -180,7 +181,7 @@ struct parse_node_st * parse_operand(struct parse_table_st *pt,
         tp = scan_table_get(st, -1);
         np1 = parse_node_new(pt);
         np1->type = EX_INTVAL;
-        np1->intval.value = atoi(tp->value);  // convert_from_base(tp->value, 2);
+        np1->intval.value = convert_from_base(tp->value, 2);  // atoi(tp->value);
     } else if (scan_table_accept(st, TK_HEXLIT)) {
         tp = scan_table_get(st, -1);
         np1 = parse_node_new(pt);
@@ -222,3 +223,33 @@ void parse_tree_print_expr(struct parse_node_st *np, int level) {
 void parse_tree_print(struct parse_node_st *np) {
     parse_tree_print_expr(np, 0);    
 }
+
+/*
+ * Function written for project01
+ * 
+ * Converts a number (of type of the base1) into the representation in another base (base2).
+*/
+uint32_t convert_from_base(char *str, int base) {
+    uint32_t temp = 0, val = 0;
+    char decimal;
+    int len = strlen(str);
+    for (int i = 0; i < len; i++) {
+        decimal = str[i];
+        if (base == 16 && decimal >= 'A') {
+            temp = 10 + (decimal - 'A');
+        } else if (base == 2 && decimal == '1') {
+			temp |= (1 << (len - i));
+		} else {
+            temp = decimal - '0';
+        }
+        if ((val & 0xF0000000) != 0) {
+		    printf("overflows uint32_t: %s\n", str);
+		    exit(-1);
+		}
+        val = val * base + temp;
+    }
+	if (base == 2)
+		return temp;
+    return val;
+}
+
