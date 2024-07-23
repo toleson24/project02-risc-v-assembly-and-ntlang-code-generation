@@ -392,8 +392,7 @@ gcc -g -c -o rstr_c.o rstr_c.c
 gcc -g -o rstr rstr.o rstr_c.o rstr_s.o 
 ```
 
-> Note: please see required objects listed next to `RSTR_OBJS` in the Makefile.
-> Note: repeat this for all `<test_program>.c` files that will be tested in this command.
+> Note: please see required objects listed next to `RSTR_OBJS` in the Makefile. Repeat this for all `<test_program>.c` files that will be tested in this command.  
 
 To create the main test program, run
 
