@@ -373,28 +373,51 @@ Autograder: https://github.com/phpeterson-usf/autograder
 
 For general purpose usage, please use the Makefile.
 
-The Makefile will link and compile the primary objects required for running `project02.c` as the main fucntion. For example,
+The Makefile will link and compile the primary objects required for running `ntlang.c` as the main fucntion. For example,
 
 ```bash
-gcc -g -c -o project02.o project02.c  
+gcc -g -c -o ntlang.o ntlang.c  
 gcc -g -c -o scan.o scan.c  
 gcc -g -c -o parse.o parse.c  
 gcc -g -c -o eval.o eval.c  
+gcc -g -c -o compile.o compile.c
 ```
 
-> Note: THIS IS INCOMPLETE <!-- TODO -->! 
+To assemble and compile the Assembly and C test programs, run
+
+```bash
+gcc -g -c -o rstr.o rstr.c
+as -g -o rstr_s.o rstr_s.s
+gcc -g -c -o rstr_c.o rstr_c.c
+```
+
+> Note: please see required objects listed next to `RSTR_OBJS` in the Makefile.
+
+To create the main test program, run
+
+```bash
+gcc -g -o project02.o scan.o parse.o eval.o compile.o rstr.o rstr_c.o rstr_s.o
+```
+
+> Note: include all `.o` files that will be tested in this command.
+
+In this example, test rstr using the following:
+
+```bash
+./rstr FooBar
+``` 
 
 ### Running
 
 #### Manual Testing
 
-To test NTLang, invoke the project01 object with the -e flag. Pass the expression in quotations. For example
+To test NTLang & Code Generation, invoke the `ntlang` object with the `-e` flag. Pass the expression in quotations. For example
 
 ```bash
-./project01 -e "3 * 9"  
+./ntlang -e "(a0 * a1) + a2" -a0 3 -a1 4 -a2 5  
 ```
 
-> Note: For more extensive usages, please see the general [Requirements](#Requirements) section.  
+> Note: For more extensive usages, please see the general [Requirements](#Requirements) section and the [Tests](https://github.com/USF-CS631-S24/tests) repository, specifically `project02/project02.toml`.  
 
 #### Autograder Testing
 
