@@ -389,6 +389,7 @@ To assemble and compile the Assembly and C test programs, run
 gcc -g -c -o rstr.o rstr.c
 as -g -o rstr_s.o rstr_s.s
 gcc -g -c -o rstr_c.o rstr_c.c
+gcc -g -o rstr rstr.o rstr_c.o rstr_s.o 
 ```
 
 > Note: please see required objects listed next to `RSTR_OBJS` in the Makefile.
@@ -396,7 +397,7 @@ gcc -g -c -o rstr_c.o rstr_c.c
 To create the main test program, run
 
 ```bash
-gcc -g -o project02.o scan.o parse.o eval.o compile.o rstr.o rstr_c.o rstr_s.o
+gcc -g -o ntlang.o scan.o parse.o eval.o compile.o rstr.o rstr_c.o rstr_s.o
 ```
 
 > Note: include all `.o` files that will be tested in this command.
