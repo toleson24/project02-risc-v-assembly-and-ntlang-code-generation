@@ -393,16 +393,15 @@ gcc -g -o rstr rstr.o rstr_c.o rstr_s.o
 ```
 
 > Note: please see required objects listed next to `RSTR_OBJS` in the Makefile.
+> Note: repeat this for all `<test_program>.c` files that will be tested in this command.
 
 To create the main test program, run
 
 ```bash
-gcc -g -o ntlang.o scan.o parse.o eval.o compile.o rstr.o rstr_c.o rstr_s.o
+gcc -g -o ntlang ntlang.o scan.o parse.o eval.o compile.o
 ```
 
-> Note: include all `.o` files that will be tested in this command.
-
-In this example, test rstr using the following:
+In this example, test `rstr` using the following:
 
 ```bash
 ./rstr FooBar
